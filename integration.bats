@@ -1,13 +1,12 @@
 #!/usr/bin/env bats
 
 setup() {
-  [ "$CI" = "true" ] && return
   cd $HOME/workspace
-  pwd
-  ls -lh
 }
 
 @test "it runs" {
+  pwd 
+  ls -lh 
   run semantic-rs
   [ "$status" -eq 1 ]
 }
