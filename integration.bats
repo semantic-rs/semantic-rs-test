@@ -2,10 +2,10 @@
 
 setup() {
   if [ -z "$CI" ]; then
+    rm -rf ../workspace
+    mkdir ../workspace
+    cp -ar fixtures/* ../workspace
     export HOME=$(readlink -f ..)
-    rm -rf $HOME/workspace
-    mkdir $HOME/workspace
-    cp -ar fixtures/* $HOME/workspace
   fi
 
   cd $HOME/workspace
