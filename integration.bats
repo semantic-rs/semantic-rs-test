@@ -31,7 +31,7 @@ setup() {
 
 @test "Initializes to v1.0.0" {
   cd initial-release
-  git reset --hard master
+  mv git .git && git reset --hard master
 
   run semantic-rs
   [ "$status" -eq 0 ]
@@ -41,7 +41,7 @@ setup() {
 
 @test "Bumps to next minor" {
   cd next-minor
-  git reset --hard master
+  mv git .git && git reset --hard master
 
   run grep -q 'version = "1.0.0"' Cargo.toml
   [ "$status" -eq 0 ]
