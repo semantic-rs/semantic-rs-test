@@ -71,3 +71,10 @@ teardown() {
   run grep -q 'version = "1.1.0"' Cargo.toml
   [ "$status" -eq 0 ]
 }
+
+@test "No crash with malformed tags" {
+  cd malformed-tag
+  mv git .git && git reset --hard master
+
+  semantic-rs
+}
