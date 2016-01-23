@@ -4,6 +4,7 @@ dist: trusty
 cache:
   directories:
     - $HOME/rust
+    - $HOME/.cargo
 
 rust:
   - stable
