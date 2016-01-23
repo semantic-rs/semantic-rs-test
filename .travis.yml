@@ -1,6 +1,10 @@
 language: rust
 sudo: required
 dist: trusty
+cache:
+  directories:
+    - $HOME/rust
+    - $HOME/.cargo
 
 rust:
   - stable
@@ -8,7 +12,9 @@ rust:
 before_script:
   - |
       git clone https://github.com/sstephenson/bats/ &&
-      cargo install --git https://github.com/semantic-rs/semantic-rs &&
+      (cargo install --git https://github.com/semantic-rs/semantic-rs || true) &&
+      mkdir $HOME/workspace &&
+      cp -ar $TRAVIS_BUILD_DIR/fixtures/* $HOME/workspace/ &&
       export PATH=$(pwd)/bats/bin:$HOME/.cargo/bin:$PATH
 
 script:
@@ -17,5 +23,4 @@ script:
 
 
 notifications:
-  email:
-    on_success: never
+  email: false

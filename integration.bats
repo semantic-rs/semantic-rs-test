@@ -1,12 +1,13 @@
 #!/usr/bin/env bats
 
 setup() {
-  [ "$CI" = "true" ] && return
-  [ -d "semantic-rs" ] || git clone https://github.com/semantic-rs/semantic-rs
-  pushd semantic-rs
-  git pull
-  cargo build
-  popd
+  cd $HOME/workspace
+  git config --global user.name "semantic-rs"
+  git config --global user.email "semantic@rs"
+}
+
+teardown() {
+  rm $HOME/.gitconfig
 }
 
 @test "it runs" {
@@ -15,27 +16,26 @@ setup() {
 }
 
 @test "fails without Cargo.toml" {
-  cd fixtures/empty-dir
+  cd empty-dir
   run semantic-rs
   [ "$status" -eq 1 ]
 }
 
 @test "fails on non-git directories" {
-  skip
-  cd fixtures/not-a-repo
+  cd not-a-repo
   run semantic-rs
   [ "$status" -eq 1 ]
 }
 
 @test "fails with broken Cargo.toml" {
-  cd fixtures/broken-cargo-toml
+  cd broken-cargo-toml
   run semantic-rs
   [ "$status" -eq 1 ]
 }
 
 @test "Initializes to v1.0.0" {
-  cd fixtures/initial-release
-  git reset --hard master
+  cd initial-release
+  mv git .git && git reset --hard master
 
   run semantic-rs
   [ "$status" -eq 0 ]
@@ -44,8 +44,8 @@ setup() {
 }
 
 @test "Bumps to next minor" {
-  cd fixtures/next-minor
-  git reset --hard master
+  cd next-minor
+  mv git .git && git reset --hard master
 
   run grep -q 'version = "1.0.0"' Cargo.toml
   [ "$status" -eq 0 ]
@@ -55,4 +55,26 @@ setup() {
 
   run grep -q 'version = "1.1.0"' Cargo.toml
   [ "$status" -eq 0 ]
+}
+
+@test "No bump when no new commits" {
+  cd no-bump
+  mv git .git && git reset --hard master
+
+  run grep -q 'version = "1.1.0"' Cargo.toml
+  [ "$status" -eq 0 ]
+
+  run semantic-rs
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "No version bump. Nothing to do" ]]
+
+  run grep -q 'version = "1.1.0"' Cargo.toml
+  [ "$status" -eq 0 ]
+}
+
+@test "No crash with malformed tags" {
+  cd malformed-tag
+  mv git .git && git reset --hard master
+
+  semantic-rs
 }
