@@ -1,19 +1,16 @@
 #!/usr/bin/env bats
 
 setup() {
-  if [ -z "$CI" ]; then
-    rm -rf ../workspace
-    mkdir ../workspace
-    cp -ar fixtures/* ../workspace
-    export HOME=$(readlink -f ..)
-  fi
-
   cd $HOME/workspace
+  git config --global user.name "semantic-rs"
+  git config --global user.email "semantic@rs"
+}
+
+teardown() {
+  rm $HOME/.gitconfig
 }
 
 @test "it runs" {
-  pwd 
-  ls -lh 
   run semantic-rs
   [ "$status" -eq 1 ]
 }
