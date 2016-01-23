@@ -13,7 +13,7 @@ before_script:
       git clone https://github.com/sstephenson/bats/ &&
       cargo install --git https://github.com/semantic-rs/semantic-rs &&
       mkdir $HOME/workspace &&
-      cp -r fixture/* $HOME/workspace/ &&
+      cp -ar $TRAVIS_BUILD_DIR/fixture/* $HOME/workspace/ &&
       export PATH=$(pwd)/bats/bin:$HOME/.cargo/bin:$PATH
 
 script:
