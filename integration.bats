@@ -2,11 +2,7 @@
 
 setup() {
   [ "$CI" = "true" ] && return
-  [ -d "semantic-rs" ] || git clone https://github.com/semantic-rs/semantic-rs
-  pushd semantic-rs
-  git pull
-  cargo build
-  popd
+  cd $HOME/tmp
 }
 
 @test "it runs" {
