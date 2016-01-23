@@ -3,6 +3,8 @@
 setup() {
   [ "$CI" = "true" ] && return
   cd $HOME/workspace
+  pwd
+  ls -lh
 }
 
 @test "it runs" {
