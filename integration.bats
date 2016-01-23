@@ -1,6 +1,13 @@
 #!/usr/bin/env bats
 
 setup() {
+  if [ -z "$CI" ]; then
+    export HOME=$(readlink -f ..)
+    rm -rf $HOME/workspace
+    mkdir $HOME/workspace
+    cp -ar fixtures/* $HOME/workspace
+  fi
+
   cd $HOME/workspace
 }
 
@@ -48,6 +55,21 @@ setup() {
 
   run semantic-rs
   [ "$status" -eq 0 ]
+
+  run grep -q 'version = "1.1.0"' Cargo.toml
+  [ "$status" -eq 0 ]
+}
+
+@test "No bump when no new commits" {
+  cd no-bump
+  mv git .git && git reset --hard master
+
+  run grep -q 'version = "1.1.0"' Cargo.toml
+  [ "$status" -eq 0 ]
+
+  run semantic-rs
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "No version bump. Nothing to do" ]]
 
   run grep -q 'version = "1.1.0"' Cargo.toml
   [ "$status" -eq 0 ]
