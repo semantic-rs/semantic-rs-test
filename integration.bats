@@ -2,7 +2,7 @@
 
 setup() {
   [ "$CI" = "true" ] && return
-  cd $HOME/tmp
+  cd $HOME/workspace
 }
 
 @test "it runs" {
